@@ -1,0 +1,20 @@
+name: Build APK
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+      - name: Build with Gradle
+        run: |
+          if [ ! -f "gradlew" ]; then
+            gradle init --type basic
+            printf "org.gradle.jvmargs=-Xmx2048m\n" > gradle.properties
+          fi
+          chmod +x gradlew
+          ./gradlew assembleDebug
